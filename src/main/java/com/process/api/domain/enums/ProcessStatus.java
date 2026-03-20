@@ -1,4 +1,8 @@
 package com.process.api.domain.enums;
 
-public class ProcessStatus {
+public enum ProcessStatus {
+    PENDING,
+    PROCESSING,
+    DONE,
+    FAILED
 }

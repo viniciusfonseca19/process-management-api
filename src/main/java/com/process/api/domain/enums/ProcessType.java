@@ -1,4 +1,7 @@
 package com.process.api.domain.enums;
 
-public class ProcessType {
+public enum ProcessType {
+    EMAIL,
+    REPORT,
+    FILE
 }
