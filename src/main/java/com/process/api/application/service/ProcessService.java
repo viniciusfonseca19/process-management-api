@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 public class ProcessService {
 
     private final ProcessRepository repository;
+    private final ProcessAsyncService asyncService;
 
     public ProcessResponseDTO create(ProcessRequestDTO dto) {
 
@@ -31,6 +32,9 @@ public class ProcessService {
                 .build();
 
         Process saved = repository.save(process);
+
+        //  CHAMA O PROCESSAMENTO ASSÍNCRONO
+        asyncService.process(saved.getId());
 
         return toResponse(saved);
     }
@@ -59,6 +63,9 @@ public class ProcessService {
         process.setUpdatedAt(LocalDateTime.now());
 
         repository.save(process);
+
+        //  REPROCESSA ASSÍNCRONO
+        asyncService.process(process.getId());
     }
 
     private ProcessResponseDTO toResponse(Process process) {
