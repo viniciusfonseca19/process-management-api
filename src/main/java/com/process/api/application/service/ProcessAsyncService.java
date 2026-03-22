@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -18,34 +19,54 @@ public class ProcessAsyncService {
     private final ProcessRepository repository;
 
     @Async
-    public void process(Long processId) {
-
-        Process process = repository.findById(processId)
-                .orElseThrow(() -> new RuntimeException("Processo não encontrado"));
+    @Transactional
+    public void process(Long id) {
 
         try {
+            // Busca o processo (estado mais recente)
+            Process process = repository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Processo não encontrado"));
+
             // Atualiza para PROCESSING
             process.setStatus(ProcessStatus.PROCESSING);
             process.setUpdatedAt(LocalDateTime.now());
             repository.save(process);
 
-            // Simula processamento (ex: envio de email, geração de relatório)
+            log.info("Process {} iniciado", id);
+
+            // Simulação de processamento (email, relatório, etc.)
             Thread.sleep(3000);
 
-            // Resultado fictício
-            process.setStatus(ProcessStatus.DONE);
-            process.setResult("Processamento concluído com sucesso");
-            process.setUpdatedAt(LocalDateTime.now());
+            // Busca novamente para evitar problema de versão
+            Process updatedProcess = repository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Processo não encontrado"));
+
+            // Finaliza como DONE
+            updatedProcess.setStatus(ProcessStatus.DONE);
+            updatedProcess.setResult("Processado com sucesso");
+            updatedProcess.setUpdatedAt(LocalDateTime.now());
+
+            repository.save(updatedProcess);
+
+            log.info("Process {} finalizado com sucesso", id);
 
         } catch (Exception e) {
 
-            process.setStatus(ProcessStatus.FAILED);
-            process.setResult("Erro: " + e.getMessage());
-            process.setUpdatedAt(LocalDateTime.now());
+            log.error("Erro ao processar {}: {}", id, e.getMessage());
 
-            log.error("Erro ao processar ID {}: {}", processId, e.getMessage());
+            try {
+                Process failedProcess = repository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Processo não encontrado"));
+
+                failedProcess.setStatus(ProcessStatus.FAILED);
+                failedProcess.setResult(e.getMessage());
+                failedProcess.setUpdatedAt(LocalDateTime.now());
+
+                repository.save(failedProcess);
+
+            } catch (Exception ex) {
+                log.error("Erro ao atualizar status para FAILED do processo {}: {}", id, ex.getMessage());
+            }
         }
-
-        repository.save(process);
     }
 }
