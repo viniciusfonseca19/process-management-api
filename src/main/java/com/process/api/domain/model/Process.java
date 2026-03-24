@@ -20,4 +20,5 @@ public class Process {
     private String result;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long version;
 }

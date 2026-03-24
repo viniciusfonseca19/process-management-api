@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @Table(name = "processes")
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ProcessEntity {
 
     @Id
@@ -21,23 +21,18 @@ public class ProcessEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private ProcessType type;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private ProcessStatus status;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String payload;
 
     @Column(columnDefinition = "TEXT")
     private String result;
 
-    @Column(nullable = false)
     private LocalDateTime createdAt;
-
-    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     @Version
