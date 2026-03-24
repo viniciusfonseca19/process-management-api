@@ -1,4 +1,4 @@
-package com.process.api;
+package com.process.api.tools;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
