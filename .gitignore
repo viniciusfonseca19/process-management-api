@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# 🔐 arquivos sensíveis
+application-dev.yml
+
+# arquivos de ambiente
+.env
+.env.*
