@@ -9,8 +9,8 @@ import java.util.concurrent.Executors;
 @Configuration
 public class AsyncConfig {
 
-    @Bean
-    public Executor taskExecutor() {
+    @Bean(name = "simpleExecutor")
+    public Executor simpleExecutor() {
         return Executors.newFixedThreadPool(5);
     }
 }

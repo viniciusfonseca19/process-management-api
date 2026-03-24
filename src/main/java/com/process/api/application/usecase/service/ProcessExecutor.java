@@ -1,4 +1,4 @@
-package com.process.api.application.service;
+package com.process.api.application.usecase.service;
 
 import com.process.api.domain.enums.ProcessStatus;
 import com.process.api.domain.model.Process;

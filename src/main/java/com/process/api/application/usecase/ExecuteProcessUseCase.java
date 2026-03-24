@@ -1,6 +1,6 @@
 package com.process.api.application.usecase;
 
-import com.process.api.application.service.ProcessAsyncService;
+import com.process.api.application.usecase.service.ProcessAsyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

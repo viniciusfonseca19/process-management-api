@@ -1,4 +1,4 @@
-package com.process.api.application.service;
+package com.process.api.application.usecase.service;
 
 import com.process.api.application.dto.request.ProcessRequestDTO;
 import com.process.api.application.dto.response.ProcessResponseDTO;

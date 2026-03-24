@@ -2,7 +2,7 @@ package com.process.api.application.usecase;
 
 import com.process.api.application.dto.request.ProcessRequestDTO;
 import com.process.api.application.dto.response.ProcessResponseDTO;
-import com.process.api.application.service.ProcessService;
+import com.process.api.application.usecase.service.ProcessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
