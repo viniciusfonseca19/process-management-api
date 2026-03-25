@@ -2,11 +2,13 @@ package com.process.api.interfaces.controller;
 
 import com.process.api.application.dto.request.ProcessRequestDTO;
 import com.process.api.application.dto.response.ProcessResponseDTO;
-import com.process.api.application.usecase.service.ProcessService;
+import com.process.api.application.usecase.CreateProcessUseCase;
+import com.process.api.application.usecase.ExecuteProcessUseCase;
+import com.process.api.application.usecase.RetryProcessUseCase;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,25 +16,25 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProcessController {
 
-    private final ProcessService service;
+    private final CreateProcessUseCase createUseCase;
+    private final ExecuteProcessUseCase executeUseCase;
+    private final RetryProcessUseCase retryUseCase;
 
     @PostMapping
     public ProcessResponseDTO create(@RequestBody @Valid ProcessRequestDTO dto) {
-        return service.create(dto);
-    }
+        ProcessResponseDTO response = createUseCase.execute(dto);
 
-    @GetMapping
-    public Page<ProcessResponseDTO> list(Pageable pageable) {
-        return service.findAll(pageable);
-    }
+        //  dispara o processamento async
+        executeUseCase.execute(response.getId());
 
-    @GetMapping("/{id}")
-    public ProcessResponseDTO getById(@PathVariable Long id) {
-        return service.findById(id);
+        return response;
     }
 
     @PostMapping("/{id}/retry")
     public void retry(@PathVariable Long id) {
-        service.retry(id);
+        retryUseCase.execute(id);
+
+        //  reprocessa novamente
+        executeUseCase.execute(id);
     }
 }

@@ -1,4 +1,4 @@
-package com.process.api.application.mapper;
+package com.process.api.infrastructure.persistence.mapper;
 
 import com.process.api.domain.model.UserModel;
 import com.process.api.infrastructure.persistence.entity.User;
